@@ -31,7 +31,7 @@
 </head>
 <body>
 <h1>🎵 Escáner QR Secreto</h1>
-<p>Escanea un QR de tu juego sin revelar la canción</p>
+<p>Escanea un QR y abre la canción directamente</p>
 <button onclick="startScanner()">Escanear QR</button>
 <video id="preview" autoplay></video>
 
@@ -53,8 +53,8 @@ async function startScanner() {
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       const code = jsQR(imageData.data, canvas.width, canvas.height);
       if (code) {
-        // Redirige al URL del QR sin mostrar la canción antes
-        window.location.href = code.data;
+        // Abrir el enlace en una nueva ventana/pestaña
+        window.open(code.data, "_blank");
       }
     }
     requestAnimationFrame(tick);

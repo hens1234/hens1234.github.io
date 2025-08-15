@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Escáner QR Secreto</title>
+<style>
+  body {
+    background: #121212;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 2rem;
+  }
+  button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 8px;
+    background: #1DB954;
+    color: white;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  video {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+<h1>🎵 Escáner QR Secreto</h1>
+<p>Escanea un QR de tu juego sin revelar la canción</p>
+<button onclick="startScanner()">Escanear QR</button>
+<video id="preview" autoplay></video>
+
+<script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+<script>
+let video = document.getElementById("preview");
+
+async function startScanner() {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+  video.srcObject = stream;
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  function tick() {
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, canvas.width, canvas.height);
+      if (code) {
+        // Redirige al URL del QR sin mostrar la canción antes
+        window.location.href = code.data;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+</script>
+</body>
+</html>

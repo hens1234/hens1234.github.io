@@ -53,8 +53,18 @@ async function startScanner() {
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       const code = jsQR(imageData.data, canvas.width, canvas.height);
       if (code) {
-        // Abrir el enlace en una nueva ventana/pestaña
-        window.open(code.data, "_blank");
+        // Mostrar botón para abrir enlace en Spotify
+        let btn = document.getElementById("openLink");
+        if (!btn) {
+          btn = document.createElement("button");
+          btn.id = "openLink";
+          btn.innerText = "Abrir canción en Spotify";
+          btn.onclick = () => window.open(code.data, "_blank");
+          document.body.appendChild(btn);
+        } else {
+          // Actualizamos el enlace si se escanea otro QR
+          btn.onclick = () => window.open(code.data, "_blank");
+        }
       }
     }
     requestAnimationFrame(tick);
